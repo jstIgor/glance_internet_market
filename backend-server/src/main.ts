@@ -10,13 +10,13 @@ import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  await app.listen(process.env.PORT ?? 3000);
-  const redis = new Redis({
-    host: process.env.REDIS_HOST,
-    port: Number(process.env.REDIS_PORT),
-    password: process.env.REDIS_PASSWORD,
-  })
   const config = app.get(ConfigService)
+  await app.listen(Number(config.getOrThrow<string>('APPLICATION_PORT')));
+  const redis = new Redis({
+    host: config.getOrThrow<string>('REDIS_HOST'),
+    port: Number(config.getOrThrow<string>('REDIS_PORT')),
+    password: config.getOrThrow<string>('REDIS_PASSWORD'),
+  })
   app.use(cookieParser(config.getOrThrow<string>('COOKIES_SECRET')));
   app.useGlobalPipes(new ValidationPipe({
     transform: true,
@@ -26,6 +26,7 @@ async function bootstrap() {
     credentials: true,
     exposedHeaders: ['Set-Cookie'],
   })
+  const SESSION_TTL = 24 * 60 * 60 * 1000; // 24 часа в миллисекундах
   app.use(session({
     secret: config.getOrThrow<string>('SESSION_SECRET'),
     name: config.getOrThrow<string>('SESSION_NAME'),
@@ -34,13 +35,14 @@ async function bootstrap() {
     cookie: { 
       secure: config.getOrThrow<string>('SESSION_SECURE') === 'true',
       httpOnly: config.getOrThrow<string>('SESSION_HTTP_ONLY') === 'true', 
-      maxAge: Number(config.getOrThrow<string>('SESSION_EXPIRATION')),
+      maxAge: SESSION_TTL,
       sameSite: 'lax',
     },
     store: new RedisStore({
       client: redis,
-      ttl: Number(config.getOrThrow<string>('SESSION_EXPIRATION')),
-      prefix: config.getOrThrow<string>('SESSION_PREFIX'),
+      prefix: 'sess:',
+      ttl: SESSION_TTL / 1000,
+      disableTouch: false,
     })
   }));
 
