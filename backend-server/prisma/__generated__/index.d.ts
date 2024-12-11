@@ -4494,7 +4494,7 @@ export namespace Prisma {
     role?: $Enums.Role
     isVerified?: boolean
     isTwoFactorEnabled?: boolean
-    method: $Enums.AuthMethod
+    method?: $Enums.AuthMethod
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountCreateNestedManyWithoutUserInput
@@ -4510,7 +4510,7 @@ export namespace Prisma {
     role?: $Enums.Role
     isVerified?: boolean
     isTwoFactorEnabled?: boolean
-    method: $Enums.AuthMethod
+    method?: $Enums.AuthMethod
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
@@ -4558,7 +4558,7 @@ export namespace Prisma {
     role?: $Enums.Role
     isVerified?: boolean
     isTwoFactorEnabled?: boolean
-    method: $Enums.AuthMethod
+    method?: $Enums.AuthMethod
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -5526,7 +5526,7 @@ export namespace Prisma {
     role?: $Enums.Role
     isVerified?: boolean
     isTwoFactorEnabled?: boolean
-    method: $Enums.AuthMethod
+    method?: $Enums.AuthMethod
     createdAt?: Date | string
     updatedAt?: Date | string
     tokens?: TokenCreateNestedManyWithoutUserInput
@@ -5541,7 +5541,7 @@ export namespace Prisma {
     role?: $Enums.Role
     isVerified?: boolean
     isTwoFactorEnabled?: boolean
-    method: $Enums.AuthMethod
+    method?: $Enums.AuthMethod
     createdAt?: Date | string
     updatedAt?: Date | string
     tokens?: TokenUncheckedCreateNestedManyWithoutUserInput
@@ -5602,7 +5602,7 @@ export namespace Prisma {
     role?: $Enums.Role
     isVerified?: boolean
     isTwoFactorEnabled?: boolean
-    method: $Enums.AuthMethod
+    method?: $Enums.AuthMethod
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountCreateNestedManyWithoutUserInput
@@ -5617,7 +5617,7 @@ export namespace Prisma {
     role?: $Enums.Role
     isVerified?: boolean
     isTwoFactorEnabled?: boolean
-    method: $Enums.AuthMethod
+    method?: $Enums.AuthMethod
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput

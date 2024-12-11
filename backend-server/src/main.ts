@@ -10,23 +10,29 @@ import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const config = app.get(ConfigService)
-  await app.listen(Number(config.getOrThrow<string>('APPLICATION_PORT')));
-  const redis = new Redis({
-    host: config.getOrThrow<string>('REDIS_HOST'),
-    port: Number(config.getOrThrow<string>('REDIS_PORT')),
-    password: config.getOrThrow<string>('REDIS_PASSWORD'),
-  })
-  app.use(cookieParser(config.getOrThrow<string>('COOKIES_SECRET')));
+  const config = app.get(ConfigService);
+
   app.useGlobalPipes(new ValidationPipe({
     transform: true,
+    whitelist: true,
   }));
+
+  app.use(cookieParser(config.getOrThrow<string>('COOKIES_SECRET')));
+
   app.enableCors({
     origin: config.getOrThrow<string>('ALLOWED_ORIGIN'),
     credentials: true,
     exposedHeaders: ['Set-Cookie'],
-  })
-  const SESSION_TTL = 24 * 60 * 60 * 1000; // 24 часа в миллисекундах
+  });
+
+  const redis = new Redis({
+    host: config.getOrThrow<string>('REDIS_HOST'),
+    port: Number(config.getOrThrow<string>('REDIS_PORT')),
+    password: config.getOrThrow<string>('REDIS_PASSWORD'),
+  });
+
+  const SESSION_TTL = 24 * 60 * 60 * 1000;
+  
   app.use(session({
     secret: config.getOrThrow<string>('SESSION_SECRET'),
     name: config.getOrThrow<string>('SESSION_NAME'),
@@ -46,5 +52,7 @@ async function bootstrap() {
     })
   }));
 
+  // Запускаем сервер последним
+  await app.listen(Number(config.getOrThrow<string>('APPLICATION_PORT')));
 }
 bootstrap();
