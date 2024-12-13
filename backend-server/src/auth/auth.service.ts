@@ -58,6 +58,14 @@ export class AuthService {
         }
 
         req.session.userId = user.id;
+        req.session.user = {
+          id: user.id,
+          email: user.email,
+          displayName: user.displayName,
+          role: user.role,
+          isVerified: user.isVerified,
+          picture: user.picture
+        };
         
         req.session.save((saveErr) => {
           if (saveErr) {
