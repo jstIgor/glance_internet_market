@@ -5,6 +5,7 @@ import { Reflector } from "@nestjs/core";
 export class AuthGuard implements CanActivate {
   constructor(private readonly reflector: Reflector) {}
 
+<<<<<<< HEAD
   public async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const sessionUser = request.session.user;
@@ -17,5 +18,12 @@ export class AuthGuard implements CanActivate {
     request.user = sessionUser;
     
     return true;
+=======
+    public async canActivate(context: ExecutionContext): Promise<boolean> {
+      const request = context.switchToHttp().getRequest()
+      const user = request.session.userId
+      
+      return !!user
+    }
+>>>>>>> f827a30 (feat;add google auth)
   }
-}
