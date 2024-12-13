@@ -1118,6 +1118,7 @@ export namespace Prisma {
     method: $Enums.AuthMethod | null
     createdAt: Date | null
     updatedAt: Date | null
+    verificationToken: string | null
   }
 
   export type UserMaxAggregateOutputType = {
@@ -1132,6 +1133,7 @@ export namespace Prisma {
     method: $Enums.AuthMethod | null
     createdAt: Date | null
     updatedAt: Date | null
+    verificationToken: string | null
   }
 
   export type UserCountAggregateOutputType = {
@@ -1146,6 +1148,7 @@ export namespace Prisma {
     method: number
     createdAt: number
     updatedAt: number
+    verificationToken: number
     _all: number
   }
 
@@ -1162,6 +1165,7 @@ export namespace Prisma {
     method?: true
     createdAt?: true
     updatedAt?: true
+    verificationToken?: true
   }
 
   export type UserMaxAggregateInputType = {
@@ -1176,6 +1180,7 @@ export namespace Prisma {
     method?: true
     createdAt?: true
     updatedAt?: true
+    verificationToken?: true
   }
 
   export type UserCountAggregateInputType = {
@@ -1190,6 +1195,7 @@ export namespace Prisma {
     method?: true
     createdAt?: true
     updatedAt?: true
+    verificationToken?: true
     _all?: true
   }
 
@@ -1268,7 +1274,7 @@ export namespace Prisma {
   export type UserGroupByOutputType = {
     id: string
     email: string
-    password: string
+    password: string | null
     displayName: string
     picture: string | null
     role: $Enums.Role
@@ -1277,6 +1283,7 @@ export namespace Prisma {
     method: $Enums.AuthMethod
     createdAt: Date
     updatedAt: Date
+    verificationToken: string | null
     _count: UserCountAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
@@ -1308,6 +1315,7 @@ export namespace Prisma {
     method?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    verificationToken?: boolean
     accounts?: boolean | User$accountsArgs<ExtArgs>
     tokens?: boolean | User$tokensArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -1325,6 +1333,7 @@ export namespace Prisma {
     method?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    verificationToken?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectScalar = {
@@ -1339,6 +1348,7 @@ export namespace Prisma {
     method?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    verificationToken?: boolean
   }
 
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1357,7 +1367,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       email: string
-      password: string
+      password: string | null
       displayName: string
       picture: string | null
       role: $Enums.Role
@@ -1366,6 +1376,7 @@ export namespace Prisma {
       method: $Enums.AuthMethod
       createdAt: Date
       updatedAt: Date
+      verificationToken: string | null
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -1772,6 +1783,7 @@ export namespace Prisma {
     readonly method: FieldRef<"User", 'AuthMethod'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
+    readonly verificationToken: FieldRef<"User", 'String'>
   }
     
 
@@ -4106,7 +4118,8 @@ export namespace Prisma {
     isTwoFactorEnabled: 'isTwoFactorEnabled',
     method: 'method',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    verificationToken: 'verificationToken'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -4268,7 +4281,7 @@ export namespace Prisma {
     NOT?: UserWhereInput | UserWhereInput[]
     id?: StringFilter<"User"> | string
     email?: StringFilter<"User"> | string
-    password?: StringFilter<"User"> | string
+    password?: StringNullableFilter<"User"> | string | null
     displayName?: StringFilter<"User"> | string
     picture?: StringNullableFilter<"User"> | string | null
     role?: EnumRoleFilter<"User"> | $Enums.Role
@@ -4277,6 +4290,7 @@ export namespace Prisma {
     method?: EnumAuthMethodFilter<"User"> | $Enums.AuthMethod
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
+    verificationToken?: StringNullableFilter<"User"> | string | null
     accounts?: AccountListRelationFilter
     tokens?: TokenListRelationFilter
   }
@@ -4284,7 +4298,7 @@ export namespace Prisma {
   export type UserOrderByWithRelationInput = {
     id?: SortOrder
     email?: SortOrder
-    password?: SortOrder
+    password?: SortOrderInput | SortOrder
     displayName?: SortOrder
     picture?: SortOrderInput | SortOrder
     role?: SortOrder
@@ -4293,6 +4307,7 @@ export namespace Prisma {
     method?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    verificationToken?: SortOrderInput | SortOrder
     accounts?: AccountOrderByRelationAggregateInput
     tokens?: TokenOrderByRelationAggregateInput
   }
@@ -4303,7 +4318,7 @@ export namespace Prisma {
     AND?: UserWhereInput | UserWhereInput[]
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
-    password?: StringFilter<"User"> | string
+    password?: StringNullableFilter<"User"> | string | null
     displayName?: StringFilter<"User"> | string
     picture?: StringNullableFilter<"User"> | string | null
     role?: EnumRoleFilter<"User"> | $Enums.Role
@@ -4312,6 +4327,7 @@ export namespace Prisma {
     method?: EnumAuthMethodFilter<"User"> | $Enums.AuthMethod
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
+    verificationToken?: StringNullableFilter<"User"> | string | null
     accounts?: AccountListRelationFilter
     tokens?: TokenListRelationFilter
   }, "id" | "email">
@@ -4319,7 +4335,7 @@ export namespace Prisma {
   export type UserOrderByWithAggregationInput = {
     id?: SortOrder
     email?: SortOrder
-    password?: SortOrder
+    password?: SortOrderInput | SortOrder
     displayName?: SortOrder
     picture?: SortOrderInput | SortOrder
     role?: SortOrder
@@ -4328,6 +4344,7 @@ export namespace Prisma {
     method?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    verificationToken?: SortOrderInput | SortOrder
     _count?: UserCountOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
     _min?: UserMinOrderByAggregateInput
@@ -4339,7 +4356,7 @@ export namespace Prisma {
     NOT?: UserScalarWhereWithAggregatesInput | UserScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"User"> | string
     email?: StringWithAggregatesFilter<"User"> | string
-    password?: StringWithAggregatesFilter<"User"> | string
+    password?: StringNullableWithAggregatesFilter<"User"> | string | null
     displayName?: StringWithAggregatesFilter<"User"> | string
     picture?: StringNullableWithAggregatesFilter<"User"> | string | null
     role?: EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
@@ -4348,6 +4365,7 @@ export namespace Prisma {
     method?: EnumAuthMethodWithAggregatesFilter<"User"> | $Enums.AuthMethod
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
+    verificationToken?: StringNullableWithAggregatesFilter<"User"> | string | null
   }
 
   export type AccountWhereInput = {
@@ -4488,7 +4506,7 @@ export namespace Prisma {
   export type UserCreateInput = {
     id?: string
     email: string
-    password: string
+    password?: string | null
     displayName: string
     picture?: string | null
     role?: $Enums.Role
@@ -4497,6 +4515,7 @@ export namespace Prisma {
     method?: $Enums.AuthMethod
     createdAt?: Date | string
     updatedAt?: Date | string
+    verificationToken?: string | null
     accounts?: AccountCreateNestedManyWithoutUserInput
     tokens?: TokenCreateNestedManyWithoutUserInput
   }
@@ -4504,7 +4523,7 @@ export namespace Prisma {
   export type UserUncheckedCreateInput = {
     id?: string
     email: string
-    password: string
+    password?: string | null
     displayName: string
     picture?: string | null
     role?: $Enums.Role
@@ -4513,6 +4532,7 @@ export namespace Prisma {
     method?: $Enums.AuthMethod
     createdAt?: Date | string
     updatedAt?: Date | string
+    verificationToken?: string | null
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     tokens?: TokenUncheckedCreateNestedManyWithoutUserInput
   }
@@ -4520,7 +4540,7 @@ export namespace Prisma {
   export type UserUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
     displayName?: StringFieldUpdateOperationsInput | string
     picture?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
@@ -4529,6 +4549,7 @@ export namespace Prisma {
     method?: EnumAuthMethodFieldUpdateOperationsInput | $Enums.AuthMethod
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    verificationToken?: NullableStringFieldUpdateOperationsInput | string | null
     accounts?: AccountUpdateManyWithoutUserNestedInput
     tokens?: TokenUpdateManyWithoutUserNestedInput
   }
@@ -4536,7 +4557,7 @@ export namespace Prisma {
   export type UserUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
     displayName?: StringFieldUpdateOperationsInput | string
     picture?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
@@ -4545,6 +4566,7 @@ export namespace Prisma {
     method?: EnumAuthMethodFieldUpdateOperationsInput | $Enums.AuthMethod
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    verificationToken?: NullableStringFieldUpdateOperationsInput | string | null
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     tokens?: TokenUncheckedUpdateManyWithoutUserNestedInput
   }
@@ -4552,7 +4574,7 @@ export namespace Prisma {
   export type UserCreateManyInput = {
     id?: string
     email: string
-    password: string
+    password?: string | null
     displayName: string
     picture?: string | null
     role?: $Enums.Role
@@ -4561,12 +4583,13 @@ export namespace Prisma {
     method?: $Enums.AuthMethod
     createdAt?: Date | string
     updatedAt?: Date | string
+    verificationToken?: string | null
   }
 
   export type UserUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
     displayName?: StringFieldUpdateOperationsInput | string
     picture?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
@@ -4575,12 +4598,13 @@ export namespace Prisma {
     method?: EnumAuthMethodFieldUpdateOperationsInput | $Enums.AuthMethod
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    verificationToken?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type UserUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
     displayName?: StringFieldUpdateOperationsInput | string
     picture?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
@@ -4589,6 +4613,7 @@ export namespace Prisma {
     method?: EnumAuthMethodFieldUpdateOperationsInput | $Enums.AuthMethod
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    verificationToken?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type AccountCreateInput = {
@@ -4833,6 +4858,7 @@ export namespace Prisma {
     method?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    verificationToken?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
@@ -4847,6 +4873,7 @@ export namespace Prisma {
     method?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    verificationToken?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
@@ -4861,6 +4888,7 @@ export namespace Prisma {
     method?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    verificationToken?: SortOrder
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -5520,7 +5548,7 @@ export namespace Prisma {
   export type UserCreateWithoutAccountsInput = {
     id?: string
     email: string
-    password: string
+    password?: string | null
     displayName: string
     picture?: string | null
     role?: $Enums.Role
@@ -5529,13 +5557,14 @@ export namespace Prisma {
     method?: $Enums.AuthMethod
     createdAt?: Date | string
     updatedAt?: Date | string
+    verificationToken?: string | null
     tokens?: TokenCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAccountsInput = {
     id?: string
     email: string
-    password: string
+    password?: string | null
     displayName: string
     picture?: string | null
     role?: $Enums.Role
@@ -5544,6 +5573,7 @@ export namespace Prisma {
     method?: $Enums.AuthMethod
     createdAt?: Date | string
     updatedAt?: Date | string
+    verificationToken?: string | null
     tokens?: TokenUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -5566,7 +5596,7 @@ export namespace Prisma {
   export type UserUpdateWithoutAccountsInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
     displayName?: StringFieldUpdateOperationsInput | string
     picture?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
@@ -5575,13 +5605,14 @@ export namespace Prisma {
     method?: EnumAuthMethodFieldUpdateOperationsInput | $Enums.AuthMethod
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    verificationToken?: NullableStringFieldUpdateOperationsInput | string | null
     tokens?: TokenUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
     displayName?: StringFieldUpdateOperationsInput | string
     picture?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
@@ -5590,13 +5621,14 @@ export namespace Prisma {
     method?: EnumAuthMethodFieldUpdateOperationsInput | $Enums.AuthMethod
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    verificationToken?: NullableStringFieldUpdateOperationsInput | string | null
     tokens?: TokenUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutTokensInput = {
     id?: string
     email: string
-    password: string
+    password?: string | null
     displayName: string
     picture?: string | null
     role?: $Enums.Role
@@ -5605,13 +5637,14 @@ export namespace Prisma {
     method?: $Enums.AuthMethod
     createdAt?: Date | string
     updatedAt?: Date | string
+    verificationToken?: string | null
     accounts?: AccountCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutTokensInput = {
     id?: string
     email: string
-    password: string
+    password?: string | null
     displayName: string
     picture?: string | null
     role?: $Enums.Role
@@ -5620,6 +5653,7 @@ export namespace Prisma {
     method?: $Enums.AuthMethod
     createdAt?: Date | string
     updatedAt?: Date | string
+    verificationToken?: string | null
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -5642,7 +5676,7 @@ export namespace Prisma {
   export type UserUpdateWithoutTokensInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
     displayName?: StringFieldUpdateOperationsInput | string
     picture?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
@@ -5651,13 +5685,14 @@ export namespace Prisma {
     method?: EnumAuthMethodFieldUpdateOperationsInput | $Enums.AuthMethod
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    verificationToken?: NullableStringFieldUpdateOperationsInput | string | null
     accounts?: AccountUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTokensInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
     displayName?: StringFieldUpdateOperationsInput | string
     picture?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
@@ -5666,6 +5701,7 @@ export namespace Prisma {
     method?: EnumAuthMethodFieldUpdateOperationsInput | $Enums.AuthMethod
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    verificationToken?: NullableStringFieldUpdateOperationsInput | string | null
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
   }
 

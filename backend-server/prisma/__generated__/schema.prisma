@@ -13,15 +13,16 @@ model User {
   email              String     @unique
   password           String
   displayName        String     @map("display_name")
-  picture            String?
+  picture            String?    @default("no-avatar.png")
   role               Role       @default(USER)
   isVerified         Boolean    @default(false) @map("is_verified")
   isTwoFactorEnabled Boolean    @default(false) @map("is_two_factor_enabled")
-  method             AuthMethod
+  method             AuthMethod @default(CREDENTIALS)
   accounts           Account[]
   createdAt          DateTime   @default(now()) @map("created_at")
   updatedAt          DateTime   @updatedAt @map("updated_at")
   tokens             Token[]
+  verificationToken  String?
 
   @@map("users")
 }

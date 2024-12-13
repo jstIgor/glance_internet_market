@@ -5,9 +5,10 @@ import { Reflector } from "@nestjs/core";
 export class AuthGuard implements CanActivate {
   constructor(private readonly reflector: Reflector) {}
 
-  public async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToHttp().getRequest()
-    const user = request.user
-    return !!user
+    public async canActivate(context: ExecutionContext): Promise<boolean> {
+      const request = context.switchToHttp().getRequest()
+      const user = request.session.userId
+      
+      return !!user
+    }
   }
-}

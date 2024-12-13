@@ -128,7 +128,8 @@ exports.Prisma.UserScalarFieldEnum = {
   isTwoFactorEnabled: 'isTwoFactorEnabled',
   method: 'method',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  verificationToken: 'verificationToken'
 };
 
 exports.Prisma.AccountScalarFieldEnum = {

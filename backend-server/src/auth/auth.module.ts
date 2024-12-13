@@ -1,12 +1,14 @@
 import { Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { UserModule } from 'src/user/user.module';
 import { AuthController } from './auth.controller';
+import { AuthService } from './auth.service';
+import { UserModule } from '../user/user.module';
+import { GoogleAuthService } from './services/google-auth.service';
+import { EmailService } from './services/email.service';
+import { AuthGoogleController } from './auth.controller.google';
 
 @Module({
-  providers: [AuthService],
-  imports:[UserModule],
-  controllers:[AuthController]
+  imports: [UserModule],
+  controllers: [AuthController, AuthGoogleController],
+  providers: [AuthService, GoogleAuthService, EmailService],
 })
 export class AuthModule {}
-
