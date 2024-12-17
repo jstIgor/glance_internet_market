@@ -1,62 +1,77 @@
-import { AuthMethod } from 'prisma/__generated__/edge';
-import { PrismaService } from './../prisma/prisma.service';
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
+import { RegisterUserDto } from '../shared/dtos/user/register.dto';
 import * as bcrypt from 'bcrypt';
-import { RegisterUserDto } from 'src/shared/dtos/user/register.dto';
-interface IUser {
-  displayName: string;
-  email: string;
-  message: string;
-  password: string;
-  picture: string;
-  method: AuthMethod;
-  isVerified: boolean;
-}
 
 @Injectable()
 export class UserService {
-  constructor(private readonly prismaService: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
-  public async createUser(data: RegisterUserDto) {
-    const user = await this.prismaService.user.findUnique({ where: { email: data.email } })
-    if (user) {
-      throw new BadRequestException('Пользователь с таким email уже существует')
+  async createUser(dto: RegisterUserDto) {
+    const hashedPassword = dto.password ? await bcrypt.hash(dto.password, 10) : null;
+    const candidate = await this.findUserByEmail(dto.email)
+    if(candidate) {
+      throw new BadRequestException("Пользователь с таким email уже существует")
     }
-    const hashedPassword = await bcrypt.hash(data.password, 5)
-    const newUser = await this.prismaService.user.create({
+    return this.prisma.user.create({
       data: {
-        ...data,
+        email: dto.email,
         password: hashedPassword,
-        method: AuthMethod.CREDENTIALS
-      }
-    })
-    return newUser
+        displayName: dto.displayName,
+        picture: dto.image,
+        isVerified: dto.isVerified || false,
+        method: dto.method || "CREDENTIALS",
+        accounts: {
+          create: [], // Создаем пустой массив аккаунтов
+        },
+      },
+      include: {
+        accounts: true,
+      },
+    });
   }
 
-
-  public async findUserByEmail(email: string) {
-    const user = await this.prismaService.user.findUnique({
-      where: { email }, include: {
-        accounts: true
-      }
-    })
-    if (!user) {
-      throw new NotFoundException('Пользователь не найден')
-    }
-    return user
+  async findUserByEmail(email: string) {
+    return this.prisma.user.findUnique({
+      where: { email },
+      include: {
+        accounts: true,
+      },
+    });
   }
 
-  public async findUserById(id: string) {
-    const user = await this.prismaService.user.findUnique({
-      where: { id }, include: {
-        accounts: true
-      }
-    })
-    if (!user) {
-      throw new NotFoundException('Пользователь не найден')
-    }
-    return user
+  async findUserById(id: string) {
+    return this.prisma.user.findUnique({
+      where: { id },
+      include: {
+        accounts: true,
+      },
+    });
   }
 
+  async updateVerificationToken(userId: string, token: string) {
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: { verificationToken: token },
+    });
+  }
 
+  async findUserByVerificationToken(token: string) {
+    return this.prisma.user.findFirst({
+      where: { verificationToken: token },
+      include: {
+        accounts: true,
+      },
+    });
+  }
+
+  async verifyUser(userId: string) {
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        isVerified: true,
+        verificationToken: null,
+      },
+    });
+  }
 }

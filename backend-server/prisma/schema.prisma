@@ -11,7 +11,7 @@ datasource db {
 model User {
   id                 String     @id @default(uuid())
   email              String     @unique
-  password           String
+  password           String?
   displayName        String     @map("display_name")
   picture            String?    @default("no-avatar.png")
   role               Role       @default(USER)
@@ -22,6 +22,7 @@ model User {
   createdAt          DateTime   @default(now()) @map("created_at")
   updatedAt          DateTime   @updatedAt @map("updated_at")
   tokens             Token[]
+  verificationToken  String?
 
   @@map("users")
 }
