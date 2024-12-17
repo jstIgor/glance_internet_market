@@ -7,13 +7,11 @@ export class AuthGuard implements CanActivate {
 
   public async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const sessionUser = request.session.user;
-
+    const sessionUser = request.session.userId;
     if (!sessionUser) {
       throw new UnauthorizedException('Пользователь не авторизован');
     }
 
-    // Добавляем пользователя из сессии в request
     request.user = sessionUser;
     
     return true;

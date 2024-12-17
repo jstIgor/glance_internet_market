@@ -1,32 +1,26 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Resend } from 'resend';
 
 @Injectable()
-export class EmailService implements OnModuleInit {
+export class EmailService {
   private resend: Resend;
 
-  constructor(private readonly configService: ConfigService) {}
-
-  onModuleInit() {
-    const apiKey = this.configService.get<string>('RESEND_API_KEY');
-    if (!apiKey) {
-      throw new Error('RESEND_API_KEY not found in environment variables');
-    }
-    this.resend = new Resend(apiKey);
+  constructor(private readonly configService: ConfigService) {
+    this.resend = new Resend(this.configService.getOrThrow('RESEND_API_KEY'));
   }
 
-  async sendVerificationEmail(email: string, token: string) {
-    const verificationLink = `${this.configService.get('APPLICATION_URL')}/verify-email?token=${token}`;
+  async sendVerificationEmail(email: string, token: string): Promise<void> {
+    const verificationUrl = `${this.configService.get('APPLICATION_URL')}/api/auth/verify-email/${token}`;
 
     await this.resend.emails.send({
       from: 'onboarding@resend.dev',
       to: email,
       subject: 'Verify your email',
       html: `
-        <h1>Welcome!</h1>
-        <p>Please verify your email by clicking the link below:</p>
-        <a href="${verificationLink}">Verify Email</a>
+        <h1>Email Verification</h1>
+        <p>Please click the link below to verify your email:</p>
+        <a href="${verificationUrl}">Verify Email</a>
       `,
     });
   }

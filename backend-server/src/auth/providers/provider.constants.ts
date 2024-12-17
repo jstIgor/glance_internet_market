@@ -1,7 +1,7 @@
 import { FactoryProvider, ModuleMetadata } from "@nestjs/common";
 import { BaseProviderType } from "./services/types/base-provider.type";
 
-export const PROVIDER_OPTIONS_SYMBOL = Symbol();
+export const PROVIDER_OPTIONS = 'PROVIDER_OPTIONS';
 
 export type TypeOptions = {
   baseUrl: string;

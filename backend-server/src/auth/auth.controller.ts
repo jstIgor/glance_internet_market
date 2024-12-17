@@ -6,7 +6,7 @@ import { Request, Response } from "express";
 import { LoginDto } from "./dtos/login.dto";
 import { AuthGuard } from "./guards/auth.guard";
 
-@Controller('api/auth')
+@Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) { }
   @Post('register')

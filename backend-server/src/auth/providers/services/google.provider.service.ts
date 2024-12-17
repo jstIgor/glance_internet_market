@@ -1,33 +1,39 @@
 import { Injectable } from '@nestjs/common';
-import { baseOauthService } from './base-oAuth.service';
-import { BaseProviderType } from './types/base-provider.type';
+import { BaseProviderConfig, BaseProviderType } from './types/base-provider.type';
+import { OAuth2Client } from 'google-auth-library';
 
 @Injectable()
-export class GoogleProviderService extends baseOauthService {
-  constructor(options: BaseProviderType) {
-    super({
-      name: 'google',
-      auth_url: 'https://accounts.google.com/o/oauth2/auth',
-      access_url: 'https://oauth2.googleapis.com/token',
-      profile_url: 'https://www.googleapis.com/oauth2/v3/userinfo',
-      scopes: options.scopes,
-      client_id: options.client_id,
-      client_secret: options.client_secret,
+export class GoogleProviderService implements BaseProviderType {
+  private oauth2Client: OAuth2Client;
+  private config: BaseProviderConfig;
+
+  constructor(config: BaseProviderConfig) {
+    this.config = config;
+    this.oauth2Client = new OAuth2Client(
+      config.client_id,
+      config.client_secret,
+      config.redirect_uri,
+    );
+  }
+
+  getAuthUrl(): string {
+    return this.oauth2Client.generateAuthUrl({
+      access_type: 'offline',
+      scope: this.config.scopes,
+      prompt: 'consent',
     });
   }
 
-  public extractUserInfo(user: {
-    sub: string;
-    email: string;
-    name: string;
-    picture: string;
-    locale: string;
-    verified_email: boolean;
-  }) {
-    return super.extractUserInfo({
-      email: user.email,
-      name: user.name,
-      picture: user.picture,
-    })
+  async getTokenFromCode(code: string): Promise<any> {
+    const { tokens } = await this.oauth2Client.getToken(code);
+    return tokens;
+  }
+
+  async getUserData(token: string): Promise<any> {
+    const ticket = await this.oauth2Client.verifyIdToken({
+      idToken: token,
+      audience: this.config.client_id,
+    });
+    return ticket.getPayload();
   }
 }

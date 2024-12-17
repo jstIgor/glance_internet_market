@@ -1,35 +1,26 @@
-import { Module, DynamicModule } from '@nestjs/common';
+import { DynamicModule, Module } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { PROVIDER_OPTIONS } from './provider.constants';
 import { ProviderService } from './provider.service';
-import { GoogleProviderService } from './services/google.provider.service';
-import { YandexProviderService } from './services/yandex.provider.service';
-import { baseOauthService } from './services/base-oAuth.service';
-import { PROVIDER_OPTIONS_SYMBOL, TypeAsyncOptions, TypeOptions } from './provider.constants';
+import { getProvidersConfig } from '../config/providers.config';
 
 @Module({})
 export class ProviderModule {
-  public static register(options: TypeOptions): DynamicModule {
+  static forRoot(): DynamicModule {
     return {
       module: ProviderModule,
       providers: [
-        { useValue: options.services, provide: PROVIDER_OPTIONS_SYMBOL },
+        {
+          provide: PROVIDER_OPTIONS,
+          useFactory: async (configService: ConfigService) => {
+            return await getProvidersConfig(configService);
+          },
+          inject: [ConfigService],
+        },
         ProviderService,
       ],
-      exports: [
-        ProviderService,
-      ]
-    }
-  }
-  public static registerAsync(options: TypeAsyncOptions): DynamicModule {
-    return {
-      module: ProviderModule,
-      imports: options.imports,
-      providers: [
-        { useFactory: options.useFactory, inject: options.inject, provide: PROVIDER_OPTIONS_SYMBOL },
-        ProviderService,
-      ],
-      exports: [
-        ProviderService,
-      ]
-    }
+      exports: [ProviderService],
+      global: true,
+    };
   }
 }
