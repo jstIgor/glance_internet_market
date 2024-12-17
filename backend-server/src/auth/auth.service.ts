@@ -53,7 +53,6 @@ export class AuthService {
         }
 
         req.session.userId = user.id;
-        
         req.session.save((saveErr) => {
           if (saveErr) {
             console.error('Session save error:', saveErr);

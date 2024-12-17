@@ -18,7 +18,7 @@ async function bootstrap() {
   }));
 
   app.use(cookieParser(config.getOrThrow<string>('COOKIES_SECRET')));
-
+  app.setGlobalPrefix('api/');
   app.enableCors({
     origin: config.getOrThrow<string>('ALLOWED_ORIGIN'),
     credentials: true,
