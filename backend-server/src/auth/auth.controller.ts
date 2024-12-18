@@ -25,14 +25,15 @@ export class AuthController {
     return this.authService.logout(req, res)
   }
 
+  @UseGuards(AuthGuard)
   @Post('send-verification')
   async sendVerification(@Req() req: Request) {
-    return this.authService.sendVerificationEmail(req.session.userId);
+    return this.authService.sendVerificationEmail(req);
   }
 
-  @Post('verify-email/:token')
-  async verifyEmail(@Param('token') token: string) {
-    return this.authService.verifyEmail(token);
+  @Get('verify-email')
+  async verifyEmail(@Query('token') token: string, @Req() req: Request) {
+    return this.authService.verifyEmail(token, req);
   }
 
 }

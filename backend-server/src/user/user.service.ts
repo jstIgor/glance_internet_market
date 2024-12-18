@@ -49,22 +49,6 @@ export class UserService {
     });
   }
 
-  async updateVerificationToken(userId: string, token: string) {
-    return this.prisma.user.update({
-      where: { id: userId },
-      data: { verificationToken: token },
-    });
-  }
-
-  async findUserByVerificationToken(token: string) {
-    return this.prisma.user.findFirst({
-      where: { verificationToken: token },
-      include: {
-        accounts: true,
-      },
-    });
-  }
-
   async verifyUser(userId: string) {
     return this.prisma.user.update({
       where: { id: userId },

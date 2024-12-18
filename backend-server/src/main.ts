@@ -31,7 +31,7 @@ async function bootstrap() {
     password: config.getOrThrow<string>('REDIS_PASSWORD'),
   });
 
-  const SESSION_TTL = 24 * 60 * 60 * 1000;
+  const SESSION_TTL = 24 * 60 * 60 * 1000; 
   
   app.use(session({
     secret: config.getOrThrow<string>('SESSION_SECRET'),

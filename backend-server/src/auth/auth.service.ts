@@ -8,6 +8,8 @@ import { Request, Response } from 'express';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 import { ProviderService } from './providers/provider.service';
+import { JwtService } from '@nestjs/jwt';
+import { User } from 'prisma/__generated__/edge';
 
 @Injectable()
 export class AuthService {
@@ -16,6 +18,7 @@ export class AuthService {
     private readonly configService: ConfigService,
     private readonly providerService: ProviderService,
     private readonly emailService: EmailService,
+    private readonly jwtService: JwtService
   ) {}
 
   async register(req: Request, dto: RegisterUserDto) {
@@ -48,7 +51,7 @@ export class AuthService {
     return { message: "Вы успешно вышли из аккаунта" };
   }
 
-  private async saveSession(req: Request, user: any) {
+  private async saveSession(req: Request, user: User) {
     return new Promise((resolve, reject) => {
       req.session.regenerate((regenerateErr) => {
         if (regenerateErr) {
@@ -67,22 +70,92 @@ export class AuthService {
     });
   }
 
-  async sendVerificationEmail(userId: string) {
-    const user = await this.userService.findUserById(userId);
-    if (!user) throw new NotFoundException();
+  private generateUserAccesToken({id, email, role}: User){
+    return this.jwtService.sign({id, email, role}, {
+      secret: this.configService.getOrThrow('JWT_USER_ACCESS_TOKEN_SECRET'),
+      expiresIn: parseInt(this.configService.getOrThrow('JWT_USER_ACCESS_TOKEN_EXPIRATION')),
+    })
+  }
 
-    const token = crypto.randomBytes(32).toString('hex');
-    await this.userService.updateVerificationToken(userId, token);
-
+  async sendVerificationEmail(req: Request) {
+    const user = await this.userService.findUserById(req.session.userId)
+    if(!user) throw new NotFoundException('User not found');
+    if(user.isVerified) throw new BadRequestException('User already verified');
+    const token = this.generateUserAccesToken(user);
     await this.emailService.sendVerificationEmail(user.email, token);
   }
 
-  async verifyEmail(token: string) {
-    const user = await this.userService.findUserByVerificationToken(token);
-    if (!user) throw new NotFoundException('Invalid verification token');
+  async sendRestorePasswordEmail(email: string) {
+    const user = await this.userService.findUserByEmail(email)
+    if(!user) throw new NotFoundException('User not found');
+    const token = this.generateUserAccesToken(user);
+    await this.emailService.sendRestorePasswordEmail(user.email, token);
+  }
 
-    await this.userService.verifyUser(user.id);
-    return { message: 'Email verified successfully' };
+  async verifyEmail(token: string, req: Request) {
+    try {
+      const decoded = this.jwtService.verify(token, {
+        secret: this.configService.getOrThrow('JWT_USER_ACCESS_TOKEN_SECRET')
+      });
+      if(!decoded.id) throw new BadRequestException('Invalid verification token');
+
+      const user = await this.userService.findUserById(decoded.id);
+      if (!user) throw new NotFoundException('User not found');
+      await this.userService.verifyUser(user.id);
+
+      if(!req.session.userId) {
+        await this.saveSession(req, user);
+      }
+
+      return { 
+        message: 'verified successfully',
+        isNewSession: !req.session.userId
+      };
+
+    } catch (error) {
+      if (error.name === 'TokenExpiredError') {
+        throw new BadRequestException('Verification token has expired');
+      }
+      if (error.name === 'JsonWebTokenError') {
+        throw new BadRequestException('Invalid verification token');
+      }
+      throw error;
+    }
+  }
+
+  async verifyRestorePassword(token: string, req: Request, {
+    password : string
+  }) {
+    try {
+      const decoded = this.jwtService.verify(token, {
+        secret: this.configService.getOrThrow('JWT_USER_ACCESS_TOKEN_SECRET')
+      });
+      if(!decoded.id) throw new BadRequestException('Invalid verification token');
+
+      const user = await this.userService.findUserById(decoded.id);
+      if (!user) throw new NotFoundException('User not found');
+
+      if(!req.session.userId) {
+        await this.saveSession(req, user);
+      }
+
+      await this.userService.updateUserPassword(user.id, password)
+
+      return {
+        message: 'Password updated successfully'
+      }
+
+
+    } catch (error) {
+      if (error.name === 'TokenExpiredError') {
+        throw new BadRequestException('Verification token has expired');
+      }
+      if (error.name === 'JsonWebTokenError') {
+        throw new BadRequestException('Invalid verification token');
+      }
+      throw error;
+    }
+
   }
 }
 
